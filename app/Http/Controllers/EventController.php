@@ -10,12 +10,23 @@ use Illuminate\Support\Facades\Validator;
 class EventController extends Controller
 {
 
-    protected function validator(array $data)
+    protected function validator_create(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'date_event' => ['required', 'string', 'max:255', 'unique:events'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'date_event' => ['required', 'date', 'max:255', 'unique:events'],
+            'location' => ['required', 'string', 'max:255'],
+            'user_id' => ['required', 'exists:users,id'],
+        ]);
+    }
+
+    protected function validator_update(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['string', 'max:255'],
+            'date_event' => ['date', 'max:255', 'unique:events'],
+            'location' => ['string', 'max:255'],
+            'user_id' => ['exists:users,id'],
         ]);
     }
 
@@ -26,6 +37,13 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
+        $this->validator_create($request->all())->validate();
+        $event = Event::create($request->all());
+        if ($event) {
+            return response()->json(['event' => $event], 201);
+        } else {
+            return response()->json(null, 400);
+        }
 
     }
 
@@ -35,13 +53,21 @@ class EventController extends Controller
         if ($event) {
             return response()->json(['event' => $event], 200);
         } else {
-            return response()->json([], 404);
+            return response()->json(null, 404);
         }
 
     }
 
-    public function update()
+    public function update(Request $request, $id)
     {
+        $this->validator_update($request->all())->validate();
+        $event = Event::find($id);
+        if ($event) {
+            $event->update($request->all());
+            return response()->json(['event' => $event], 200);
+        } else {
+            return response()->json(null, 404);
+        }
 
     }
 
@@ -52,7 +78,7 @@ class EventController extends Controller
             $event->delete();
             return response()->json(null, 204);
         } else {
-            return response()->json([], 404);
+            return response()->json(null, 404);
         }
 
     }

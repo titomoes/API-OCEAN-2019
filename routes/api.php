@@ -23,11 +23,5 @@ Route::post('logout', 'Auth\LoginController@logout');
 Route::group(['middleware' => 'auth:api'], function () {
     //CRUD Eventos
     Route::apiResource('events', 'EventController');
-//    Route::get('events', 'EventController@index');
-//    Route::get('events', 'EventController@index');
-//    Route::post('event', 'EventController@store');
-//    Route::get('events/{id}', 'EventController@show');
-//    Route::put('events/{id}', 'EventController@update');
-//    Route::delete('events/{id}', 'EventController@destroy');
 });
 
