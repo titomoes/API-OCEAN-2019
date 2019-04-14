@@ -35,5 +35,15 @@ class User extends Authenticatable
 
         return $this->api_token;
     }
-    
+
+    public function create_event()
+    {
+        return $this->hasMany(Event::class,'user_id','id');
+    }
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class,'user_id','id');
+    }
+
+
 }

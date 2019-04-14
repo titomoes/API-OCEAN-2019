@@ -36,6 +36,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Search for name Users
     Route::get('user/{name}', 'UserController@search_name')->name('users.name');
     //Subscribe User on Event
-    Route::post('event/{event_id}/user/{user_id}');
+    Route::post('event/{event_id}/user/{user_id}','SubscriptionController@store')->name('subscriptions.store');
 });
 
