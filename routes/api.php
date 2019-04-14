@@ -21,7 +21,17 @@ Route::post('logout', 'Auth\LoginController@logout');
 //});
 
 Route::group(['middleware' => 'auth:api'], function () {
-    //CRUD Eventos
+    //CRUD Events
     Route::apiResource('events', 'EventController');
+    //CRUD Users
+    Route::apiResource('users', 'UserController');
+    //Search for name Events
+    Route::get('event/{name}', 'EventController@search_name')->name('events.name');
+    //Search for day Events
+    Route::get('events/day/{day}', 'EventController@search_day')->name('events.day');
+    //Search for mouth Events
+    Route::get('events/month/{month}', 'EventController@search_mouth')->name('events.month');
+    //Search for year Events
+    Route::get('events/year/{year}', 'EventController@search_year')->name('events.year');
 });
 

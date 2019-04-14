@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -79,6 +80,73 @@ class EventController extends Controller
             return response()->json(null, 204);
         } else {
             return response()->json(null, 404);
+        }
+
+    }
+
+    public function search_name($name)
+    {
+        $search = Event::where('name', 'like', '%' . $name . '%')->get();
+        return $search;
+    }
+
+    public function search_day($day)
+    {
+        if ($day > 0 && $day < 32) {
+            $events = Event::all()->filter(function ($value, $key) use ($day) {
+                if (Carbon::parse($value['date_event'])->day == $day) {
+                    return true;
+                }
+            });
+            if ($events->isNotEmpty()) {
+                return response()->json($events, 200);
+            } else {
+                return response()->json('not found', 404);
+            }
+
+        } else {
+            return response()->json('day not exists', 400);
+        }
+
+
+    }
+
+    public function search_mouth($month)
+    {
+        if ($month > 0 && $month < 13) {
+            $events = Event::all()->filter(function ($value, $key) use ($month) {
+                if (Carbon::parse($value['date_event'])->month == $month) {
+                    return true;
+                }
+            });
+            if ($events->isNotEmpty()) {
+                return response()->json($events, 200);
+            } else {
+                return response()->json('not found', 404);
+            }
+
+        } else {
+            return response()->json('month not exists', 400);
+        }
+
+    }
+
+    public function search_year($year)
+    {
+        if ($year > 0 && $year < 13) {
+            $events = Event::all()->filter(function ($value, $key) use ($year) {
+                if (Carbon::parse($value['date_event'])->month == $year) {
+                    return true;
+                }
+            });
+            if ($events->isNotEmpty()) {
+                return response()->json($events, 200);
+            } else {
+                return response()->json('not found', 404);
+            }
+
+        } else {
+            return response()->json('year not exists', 400);
         }
 
     }
