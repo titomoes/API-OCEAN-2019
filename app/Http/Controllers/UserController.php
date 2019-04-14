@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Event;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -26,7 +27,6 @@ class UserController extends Controller
             'password' => ['string', 'min:8'],
         ]);
     }
-
 
     /**
      * Display a listing of the resource.
@@ -116,4 +116,11 @@ class UserController extends Controller
             return response()->json(null, 404);
         }
     }
+
+    public function search_name($name)
+    {
+        $search = User::where('name', 'like', '%' . $name . '%')->get();
+        return $search;
+    }
 }
+

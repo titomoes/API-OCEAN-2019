@@ -92,7 +92,11 @@ class EventController extends Controller
 
     public function search_day($day)
     {
-        if ($day > 0 && $day < 32) {
+        $data = ['day' => $day];
+        $dayvalidate = Validator::make($data, [
+            'day' => 'required|integer|min:1|max:31',
+        ]);
+        if ($dayvalidate->validate()) {
             $events = Event::all()->filter(function ($value, $key) use ($day) {
                 if (Carbon::parse($value['date_event'])->day == $day) {
                     return true;
@@ -103,17 +107,16 @@ class EventController extends Controller
             } else {
                 return response()->json('not found', 404);
             }
-
-        } else {
-            return response()->json('day not exists', 400);
         }
-
-
     }
 
-    public function search_mouth($month)
+    public function search_month($month)
     {
-        if ($month > 0 && $month < 13) {
+        $data = ['month' => $month];
+        $mouthvalidate = Validator::make($data, [
+            'month' => 'required|integer|min:1|max:12',
+        ]);
+        if ($mouthvalidate->validate()) {
             $events = Event::all()->filter(function ($value, $key) use ($month) {
                 if (Carbon::parse($value['date_event'])->month == $month) {
                     return true;
@@ -124,18 +127,18 @@ class EventController extends Controller
             } else {
                 return response()->json('not found', 404);
             }
-
-        } else {
-            return response()->json('month not exists', 400);
         }
-
     }
 
     public function search_year($year)
     {
-        if ($year > 0 && $year < 13) {
+        $data = ['year' => $year];
+        $yearvalidate = Validator::make($data, [
+            'year' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
+        ]);
+        if ($yearvalidate->validate()) {
             $events = Event::all()->filter(function ($value, $key) use ($year) {
-                if (Carbon::parse($value['date_event'])->month == $year) {
+                if (Carbon::parse($value['date_event'])->year == $year) {
                     return true;
                 }
             });
@@ -144,9 +147,6 @@ class EventController extends Controller
             } else {
                 return response()->json('not found', 404);
             }
-
-        } else {
-            return response()->json('year not exists', 400);
         }
 
     }
