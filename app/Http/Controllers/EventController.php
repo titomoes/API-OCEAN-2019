@@ -16,7 +16,8 @@ class EventController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'date_event' => ['required', 'date', 'max:255', 'unique:events'],
-            'location' => ['required', 'string', 'max:255'],
+            'lat' => ['required', 'string', 'max:255'],
+            'lng' => ['required', 'string', 'max:255'],
             'user_id' => ['required', 'exists:users,id'],
         ]);
     }
@@ -26,7 +27,8 @@ class EventController extends Controller
         return Validator::make($data, [
             'name' => ['string', 'max:255'],
             'date_event' => ['date', 'max:255', 'unique:events'],
-            'location' => ['string', 'max:255'],
+            'lat' => ['string', 'max:255'],
+            'lng' => ['string', 'max:255'],
             'user_id' => ['exists:users,id'],
         ]);
     }
@@ -149,5 +151,24 @@ class EventController extends Controller
             }
         }
 
+    }
+
+    public function check($id, $latitude, $longitude, $radius = 2)
+    {
+        $event = Event::select('events.*')
+            ->selectRaw('( 3959 * acos( cos( radians(?) ) *
+                           cos( radians( lat ) )
+                           * cos( radians( lng ) - radians(?)
+                           ) + sin( radians(?) ) *
+                           sin( radians( lat ) ) )
+                         ) AS distance', [$latitude, $longitude, $latitude])
+            ->havingRaw("distance < ?", [$radius])
+            ->where('id', '=', $id)
+            ->get();
+        if ($event->isNotEmpty()) {
+            return response()->json(['Check-in:' => 'yes'], 200);
+        } else {
+            return response()->json(['Check-in:' => 'no'], 200);
+        }
     }
 }

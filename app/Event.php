@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    protected $fillable = ['id', 'user_id', 'name', 'location', 'date_event', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'user_id', 'name', 'lat', 'lng', 'date_event', 'created_at', 'updated_at'];
     protected $table = 'events';
 
     public function create_user()

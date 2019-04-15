@@ -27,8 +27,8 @@ class Collumnuseridonevent extends Migration
     public function down()
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->dropColumn('user_id');
             $table->dropForeign('user_id');
+            $table->dropColumn('user_id');
         });
     }
 }
