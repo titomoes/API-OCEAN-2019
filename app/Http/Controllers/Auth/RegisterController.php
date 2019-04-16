@@ -23,6 +23,11 @@ class RegisterController extends Controller
     |
     */
 
+    /**
+     * @group Gerenciamento de Registro
+     *
+     * APIs for Gerenciar o registro
+     */
     use RegistersUsers;
 
     /**
@@ -72,38 +77,57 @@ class RegisterController extends Controller
         ]);
     }
 
+    /**
+     * Registra um Usuário.
+     *
+     * @bodyParam name string required O nome do usuário.
+     * @bodyParam email string required O email do usuário.
+     * @bodyParam password string required A senha do usuário.
+     * @bodyParam password_confirmation string required A confirmação da senha do usuário.
+     * @response 201{
+     *  "id": 1,
+     *  "name": "Jessica Jones",
+     *  "email": "js@uea.edu.br",
+     *  "updated_at": "2019-04-15 12:20:44",
+     *  "created_at": "2019-04-15 12:20:44",
+     *  "api_token": "Vn9TWl6dGEXZt0XRn7k0z13rbBss17VoWjXy3j3Si76bp9SFXm1mV16jzAQL"
+     * }
+     * @response 422{
+     *  "message": "The given data was invalid",
+     *  "errors":[
+     *  "name: The name field is required.",
+     *  "name: The name may not be greater than 255 characters.",
+     *  "email: The email field is required.",
+     *  "email: The email may not be greater than 255 characters.",
+     *  "email: The email has already been taken.",
+     *  "email: The email must be a valid email address.",
+     *  "password : The password field is required.",
+     *  "password : The password must be at least 8 characters.",
+     *  "password : The password confirmation does not match."
+     * ]
+     * }
+     * @return \Illuminate\Http\Response
+     */
     public function postRegister(Request $request)
     {
-        // Here the request is validated. The validator method is located
-        // inside the RegisterController, and makes sure the name, email
-        // password and password_confirmation fields are required.
         $this->validator($request->all())->validate();
 
-        // A Registered event is created and will trigger any relevant
-        // observers, such as sending a confirmation email or any
-        // code that needs to be run as soon as the user is created.
         event(new Registered($user = $this->create($request->all())));
 
-        // After the user is created, he's logged in.
         $this->guard()->login($user);
 
-        // And finally this is the hook that we want. If there is no
-        // registered() method or it returns null, redirect him to
-        // some other URL. In our case, we just need to implement
-        // that method to return the correct response.
-//        return $this->registered($request, $user) ?: redirect($this->redirectPath());
         return $this->registered($request, $user) ?: $this->unregistered();
     }
 
     protected function registered(Request $request, $user)
     {
         $user->generateToken();
-        return response()->json(['data' => $user->toArray()], 201);
+        return response()->json($user->toArray(), 201);
     }
 
     protected function unregistered()
     {
-        return response()->json(['erro' => '03'], 400);
+        return response()->json(['erro' => '03'], 422);
     }
 
 

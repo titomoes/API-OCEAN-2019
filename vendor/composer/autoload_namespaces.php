@@ -9,6 +9,7 @@ return array(
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'PhpOption\\' => array($vendorDir . '/phpoption/phpoption/src'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'Mpociot' => array($vendorDir . '/mpociot/reflection-docblock/src'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
 );

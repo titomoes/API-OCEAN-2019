@@ -14,13 +14,10 @@ use Illuminate\Http\Request;
 */
 Route::post('register', 'Auth\RegisterController@postRegister');
 Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout');
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::post('logout', 'Auth\LoginController@logout');
     //CRUD Events
     Route::apiResource('events', 'EventController');
     //Search for name Events
@@ -38,7 +35,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Subscribe User on Event
     Route::post('event/{event_id}/user/{user_id}', 'SubscriptionController@store')->name('subscriptions.store');
     //Check-in
-    Route::post('event/{id}/lat/{lat}/lng/{lng}', 'EventController@check')->name('events.check');
+    Route::get('event/{id}/lat/{lat}/lng/{lng}', 'EventController@check')->name('events.check');
 
 });
 
